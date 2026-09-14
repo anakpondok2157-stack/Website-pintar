@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABI — AI Assistant</title>
+<meta name="description" content="ABI adalah asisten AI modern untuk membantu belajar, coding, ide, dan produktivitas.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b12;--panel:#0d1420;--panel2:#111b2a;--text:#f5f7fb;--muted:#93a0b4;--line:#1e2a3a;--accent:#6d5dfc;--accent2:#27d3a2}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 50% -10%,#1b1740 0,#070b12 42%);color:var(--text);min-height:100vh}
+button{font:inherit;cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:265px;background:rgba(9,14,22,.94);border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:18px}
+.logo{display:flex;align-items:center;gap:12px;padding:8px}
+.logo-icon{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#8e7cff);display:grid;place-items:center;font-weight:900;font-size:21px;box-shadow:0 8px 25px #6d5dfc44}
+.logo strong{font-size:20px}.logo small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.new{border:0;background:var(--text);color:#080b11;border-radius:13px;padding:12px;font-weight:750}
+.nav{display:grid;gap:7px}.nav button{background:transparent;border:0;color:#aeb9c9;text-align:left;padding:12px;border-radius:10px}.nav button:hover,.nav button.active{background:var(--panel2);color:white}
+.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.5;padding:8px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#080d15cc;backdrop-filter:blur(12px);position:sticky;top:0;z-index:3}
+.status{display:flex;align-items:center;gap:8px;color:#cbd4e2;font-weight:650}.dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px var(--accent2)}
+.icon{border:1px solid var(--line);background:var(--panel);color:white;border-radius:10px;padding:9px 11px}
+.chat{width:min(900px,100%);margin:auto;padding:48px 22px 145px}
+.hero{text-align:center;padding:30px 0 28px}
+.hero-badge{display:inline-block;padding:7px 11px;border:1px solid #6d5dfc55;background:#6d5dfc16;border-radius:99px;color:#bcb4ff;font-size:12px;font-weight:700;margin-bottom:17px}
+.hero h1{font-size:clamp(35px,7vw,62px);letter-spacing:-2px;line-height:1.03}
+.hero h1 span{background:linear-gradient(90deg,#fff,#9d91ff);-webkit-background-clip:text;color:transparent}
+.hero p{max-width:620px;margin:15px auto;color:var(--muted);line-height:1.6}
+.quick{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:22px}
+.quick button{border:1px solid var(--line);background:var(--panel);color:#cbd4e2;padding:10px 13px;border-radius:10px}
+.quick button:hover{border-color:#6d5dfc77;background:#15162b}
+.messages{display:grid;gap:18px;margin-top:35px}
+.msg{display:flex;gap:12px;align-items:flex-start}
+.avatar{flex:0 0 34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:12px;font-weight:800}
+.ai{background:linear-gradient(135deg,var(--accent),#9186ff)}.user{background:#263244}
+.bubble{max-width:760px;background:var(--panel);border:1px solid var(--line);padding:13px 15px;border-radius:6px 15px 15px 15px;line-height:1.55;color:#dce3ee}
+.userrow{justify-content:flex-end}.userrow .bubble{background:#171e2b;border-radius:15px 6px 15px 15px}
+.composer-wrap{position:fixed;bottom:0;left:265px;right:0;padding:18px 22px 20px;background:linear-gradient(transparent,#070b12 35%);z-index:4}
+.composer{width:min(900px,100%);margin:auto;display:flex;gap:10px;background:#0d1420;border:1px solid #2a374a;border-radius:17px;padding:8px;box-shadow:0 12px 50px #0008}
+.composer input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:12px;font-size:15px}
+.send{border:0;border-radius:12px;background:var(--accent);color:white;padding:0 18px;font-weight:800}
+.footer{text-align:center;color:#647187;font-size:11px;margin-top:12px}
+@media(max-width:700px){
+.sidebar{display:none}.top{padding:0 15px}.chat{padding:28px 15px 145px}.composer-wrap{left:0;padding:12px}.hero{padding-top:20px}.hero h1{font-size:42px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-icon">A</div><div><strong>ABI</strong><small>AI Assistant</small></div></div>
+  <button class="new" onclick="newChat()">＋ Chat Baru</button>
+  <div class="nav">
+    <button class="active">⌂ Beranda</button>
+    <button>◷ Riwayat</button>
+    <button>☆ Favorit</button>
+    <button>⚙ Pengaturan</button>
+  </div>
+  <div class="side-bottom">ABI versi 1.0<br>Asisten digital untuk belajar & berkarya.</div>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div><b>ABI</b> <span style="color:#657187">/</span> Percakapan</div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="status"><i class="dot"></i> Online</span><button class="icon" onclick="toggleTheme()">◐</button></div>
+</header>
+
+<section class="chat">
+  <div class="hero" id="hero">
+    <div class="hero-badge">✦ ASISTEN AI GENERASI BARU</div>
+    <h1>Halo, saya <span>ABI.</span></h1>
+    <p>Tanyakan apa saja. ABI siap membantu belajar, coding, membuat ide, menyusun rencana, dan mengembangkan website.</p>
+    <div class="quick">
+      <button onclick="ask('Ajari saya coding dari nol')">💻 Belajar Coding</button>
+      <button onclick="ask('Bantu saya membuat website profesional')">🌐 Buat Website</button>
+      <button onclick="ask('Jelaskan AI dengan sederhana')">🤖 Tentang AI</button>
+      <button onclick="ask('Beri saya ide proyek keren')">💡 Ide Proyek</button>
+    </div>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="footer">ABI adalah prototipe antarmuka AI. Untuk jawaban AI sungguhan, backend/API perlu dihubungkan.</div>
+</section>
+</main>
+</div>
+
+<div class="composer-wrap">
+<form class="composer" onsubmit="send(event)">
+  <input id="input" autocomplete="off" placeholder="Tulis pertanyaan untuk ABI..." />
+  <button class="send">Kirim</button>
+</form>
+</div>
+
+<script>
+const messages=document.getElementById('messages'), input=document.getElementById('input');
+function add(text,type){
+ const row=document.createElement('div'); row.className='msg '+(type==='user'?'userrow':'');
+ row.innerHTML=`<div class="avatar ${type==='user'?'user':'ai'}">${type==='user'?'K':'A'}</div><div class="bubble">${escapeHtml(text)}</div>`;
+ messages.appendChild(row); window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function reply(q){
+ let r='Saya ABI. Untuk saat ini saya masih dalam mode demo, tetapi tampilan dan sistem chat ini sudah siap dikembangkan menjadi AI sungguhan.';
+ if(/coding|kode|program/i.test(q)) r='Tentu! Kita bisa belajar coding dari dasar. Mulai dari HTML untuk struktur halaman, CSS untuk desain, lalu JavaScript untuk membuat website menjadi interaktif.';
+ else if(/website|web/i.test(q)) r='Bisa. Kita dapat membuat website profesional dengan halaman beranda, layanan, tentang, kontak, desain responsif, dan nanti menghubungkannya ke AI sungguhan.';
+ else if(/ai|artificial intelligence/i.test(q)) r='AI adalah teknologi yang memungkinkan komputer melakukan tugas yang biasanya membutuhkan kecerdasan manusia, seperti memahami bahasa, mengenali pola, dan membantu membuat keputusan.';
+ else if(/ide|proyek/i.test(q)) r='Ide proyek: ABI AI, website profil profesional, aplikasi belajar, kalkulator fisika, perpustakaan digital, atau dashboard tugas sekolah.';
+ setTimeout(()=>add(r,'ai'),500);
+}
+function send(e){e.preventDefault();let q=input.value.trim();if(!q)return;add(q,'user');input.value='';reply(q)}
+function ask(q){add(q,'user');reply(q)}
+function newChat(){messages.innerHTML='';window.scrollTo({top:0,behavior:'smooth'})}
+function toggleTheme(){
+ document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';
+}
+</script>
+</body>
+</html>
